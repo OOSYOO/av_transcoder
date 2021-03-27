@@ -10,3 +10,6 @@ include_directories(${CMAKE_SOURCE_DIR}/src/ffmpeg)
 
 add_executable(av_transcoder main.cpp)
 target_link_libraries(av_transcoder ${FFMPEG_LIBRARIES})
+
+
+add_subdirectory(sample)
