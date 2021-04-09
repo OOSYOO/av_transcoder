@@ -9,4 +9,4 @@ include_directories(/usr/local/include)
 link_directories(/usr/local/lib)
 endif()
 
-set(FFMPEG_LIBRARIES avformat avfilter avcodec avutil swresample swscale z bz2)
+set(FFMPEG_LIBRARIES avformat avfilter avcodec avutil swresample swscale z bz2 pthread)
