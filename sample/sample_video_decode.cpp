@@ -3,6 +3,8 @@
 #include <unistd.h>
 #include "ffmpeg_common.h"
 
+#include <fstream>
+std::ofstream yuv_file;
 
 static int decode_packet(AVCodecContext *dec, const AVPacket *pkt, AVFrame *frame)
 {
@@ -27,6 +29,14 @@ static int decode_packet(AVCodecContext *dec, const AVPacket *pkt, AVFrame *fram
             fprintf(stderr, "Error during decoding (%s)\n", av_err2str(ret));
             return ret;
         }
+        printf("1 format : %d, w h : %d %d \n", frame->format, frame->width, frame->height);
+        std::cout << frame->linesize[0] << " --  " << frame->linesize[3] << std::endl;
+
+        int data_size = frame->linesize[0] * frame->height * 3 / 2;
+//        yuv_file.write((char *)frame->data[0], data_size);
+        yuv_file.write((char *)frame->data[0], frame->linesize[0] * frame->height);
+        yuv_file.write((char *)frame->data[1], frame->linesize[1] * frame->height/2);
+        yuv_file.write((char *)frame->data[2], frame->linesize[2] * frame->height/2);
 
         av_frame_unref(frame);
         if (ret < 0)
@@ -41,6 +51,8 @@ int main(int argc, char **argv)
     int ret = 0;
     AVFormatContext *pFormatCtx = nullptr;
     std::vector<AVCodec *> codecs_;
+    yuv_file.open("out.yuv");
+
 
     // 申请ctx
     pFormatCtx = avformat_alloc_context();
@@ -128,6 +140,12 @@ int main(int argc, char **argv)
             break;
 
         frame_cnt++;
+
+        //保存YUV数据
+//        printf("2 format : %d, w h : %d %d \n", frame->format, frame->width, frame->height);
+//        std::cout << frame->linesize[0] << " --  " << frame->linesize[1] << std::endl;
+//        av_frame_unref(frame);
+
     }
 
     printf("total frame : %d\n", frame_cnt);
@@ -136,6 +154,7 @@ int main(int argc, char **argv)
     av_frame_free(&frame);
     avformat_close_input(&pFormatCtx);
     avformat_free_context(pFormatCtx);
+    yuv_file.close();
 
     return 0;
 }
