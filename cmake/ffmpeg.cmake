@@ -6,7 +6,7 @@ if(APPLE)
 elseif(UNIX)
     MESSAGE(STATUS “This is Linux.”)
     include_directories(${CMAKE_SOURCE_DIR}/3rdparty/ffmpeg/include)
-    link_directories(${CMAKE_SOURCE_DIR}/3rdparty/ffmpeg/libcentos)
+    link_directories(${CMAKE_SOURCE_DIR}/3rdparty/ffmpeg/lib)
 endif()
 
 set(FFMPEG_LIBRARIES avformat avfilter avcodec avutil swresample swscale z bz2 pthread)
