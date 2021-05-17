@@ -24,7 +24,10 @@ static int decode_packet(AVCodecContext *dec, const AVPacket *pkt, AVFrame *fram
             // those two return values are special and mean there is no output
             // frame available, but there were no errors during decoding
             if (ret == AVERROR_EOF || ret == AVERROR(EAGAIN))
+            {
+                printf("EOF..\n");
                 return 0;
+            }
 
             fprintf(stderr, "Error during decoding (%s)\n", av_err2str(ret));
             return ret;
@@ -32,15 +35,12 @@ static int decode_packet(AVCodecContext *dec, const AVPacket *pkt, AVFrame *fram
         printf("1 format : %d, w h : %d %d \n", frame->format, frame->width, frame->height);
         std::cout << frame->linesize[0] << " --  " << frame->linesize[3] << std::endl;
 
-        int data_size = frame->linesize[0] * frame->height * 3 / 2;
-//        yuv_file.write((char *)frame->data[0], data_size);
         yuv_file.write((char *)frame->data[0], frame->linesize[0] * frame->height);
         yuv_file.write((char *)frame->data[1], frame->linesize[1] * frame->height/2);
         yuv_file.write((char *)frame->data[2], frame->linesize[2] * frame->height/2);
 
-        av_frame_unref(frame);
-        if (ret < 0)
-            return ret;
+//        av_frame_unref(frame);
+        break;
     }
 
     return 0;
@@ -135,6 +135,8 @@ int main(int argc, char **argv)
             continue;
 
         ret = decode_packet(dec_ctx, packet, frame);
+        printf("2 format : %d, w h : %d %d \n", frame->format, frame->width, frame->height);
+        av_frame_unref(frame);
         av_packet_unref(packet);
         if (ret < 0)
             break;
