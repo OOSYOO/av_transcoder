@@ -14,3 +14,6 @@ target_link_libraries(sample_mp4_to_yuvpcm ${FFMPEG_LIBRARIES})
 add_executable(sample_yuvpcm_to_mp4 sample_yuvpcm_to_mp4.cpp)
 target_link_libraries(sample_yuvpcm_to_mp4 ${FFMPEG_LIBRARIES})
 
+add_executable(sample_h264_to_rtp sample_h264_to_rtp.cpp ../src/rtpencoder/rtpencoder.cpp)
+target_link_libraries(sample_h264_to_rtp ${FFMPEG_LIBRARIES})
+
